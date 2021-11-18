@@ -1,0 +1,33 @@
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+echo 'Runnning pre-commit checks'
+
+# Format our code
+echo 'Formatting...'
+yarn prettier
+
+# Lint our code
+echo 'Linting...'
+yarn lint ||
+(
+    echo '❌ Linting failed'
+    false;
+)
+
+# Check our TS compiles
+echo 'Compiling...'
+yarn compile-check ||
+(
+    echo '❌ Failed to build'
+    false;
+)
+
+# Run our tests
+echo 'Testing...'
+yarn test || (
+    echo '❌ Tests failed'
+    false;
+)
+
+echo '✅ All looks good'
